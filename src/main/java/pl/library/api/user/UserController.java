@@ -28,7 +28,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping("/registration")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public CreateUserResponse registration(@Valid @RequestBody CreateUserRequest createUserRequest)
             throws ValidationException {

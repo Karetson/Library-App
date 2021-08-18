@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.library.adapter.mysql.role.Role;
 import pl.library.adapter.mysql.user.User;
-import pl.library.domain.role.RoleRepository;
+import pl.library.domain.role.repository.RoleRepository;
 import pl.library.domain.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -43,7 +43,7 @@ public class UserService {
             throw new ValidationException("Incorrect password");
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            Role role = roleRepository.findByName("USER");
+            Role role = roleRepository.findByName("USER").orElseThrow();
             user.setRoles(new HashSet<>(Collections.singletonList(role)));
         }
 
