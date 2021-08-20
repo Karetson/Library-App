@@ -13,6 +13,8 @@ import pl.library.adapter.mysql.user.User;
 import pl.library.api.user.dto.CreateUserRequest;
 import pl.library.api.user.dto.CreateUserResponse;
 import pl.library.domain.user.UserService;
+import pl.library.domain.user.exception.UserExistsException;
+import pl.library.domain.user.exception.UserNotFoundException;
 
 import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
@@ -26,14 +28,14 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/getAll")
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws UserNotFoundException {
         return userService.getAllUsers();
     }
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     public CreateUserResponse registration(@Valid @RequestBody CreateUserRequest createUserRequest)
-            throws ValidationException {
+            throws ValidationException, UserExistsException {
         User newUser = userService.registration(createUserRequest.toUser());
 
         return new CreateUserResponse(newUser.getId());

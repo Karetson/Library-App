@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.library.adapter.mysql.role.Role;
 import pl.library.adapter.mysql.user.User;
 import pl.library.domain.role.repository.RoleRepository;
+import pl.library.domain.user.exception.UserExistsException;
+import pl.library.domain.user.exception.UserNotFoundException;
 import pl.library.domain.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -33,15 +35,24 @@ public class UserService {
         return matcher.find();
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers() throws UserNotFoundException {
+        List<User> list = userRepository.findAll();
+
+        if (list.isEmpty()) {
+            throw new UserNotFoundException("There is no users in database");
+        } else {
+            return list;
+        }
     }
 
     @Transactional
-    public User registration(User user) throws ValidationException {
+    public User registration(User user) throws ValidationException, UserExistsException {
+
         if (!validatePassword(user.getPassword())) {
             throw new ValidationException("Password must have at least 8 characters, " +
                     "uppercase and lowercase letters, numbers and at least one special character, e.g., ! @ # ? ]");
+        } else if (userRepository.existsByUsername(user.getUsername())) {
+            throw new UserExistsException("User with '" + user.getUsername() + "' username already exists!");
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             Role role = roleRepository.findByName("USER").orElseThrow();
