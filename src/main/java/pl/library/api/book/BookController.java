@@ -31,7 +31,18 @@ public class BookController {
     @GetMapping("/getAll")
     public List<GetBookResponse> getAllBooks() {
         List<Book> foundBooks = bookService.getAllBooks();
-        return foundBooks.stream().map(GetBookResponse::new).collect(Collectors.toList());
+        return foundBooks.stream()
+                .map(GetBookResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/getAllAvailable")
+    public List<GetBookResponse> getAllAvailableBooks() {
+        List<Book> foundBooks = bookService.getAllAvailableBooks();
+        return foundBooks.stream()
+                .map(GetBookResponse::new)
+                .collect(Collectors.toList());
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
