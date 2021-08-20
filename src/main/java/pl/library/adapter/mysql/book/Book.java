@@ -23,5 +23,9 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-    private String name;
+    private String title;
+    @NotBlank
+    private String author;
+    @Builder.Default
+    private boolean available = true;
 }

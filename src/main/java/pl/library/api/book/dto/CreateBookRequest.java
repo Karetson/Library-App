@@ -5,11 +5,13 @@ import pl.library.adapter.mysql.book.Book;
 
 @Value
 public class CreateBookRequest {
-    String name;
+    String title;
+    String author;
 
     public Book toBook() {
         return Book.builder()
-                .name(this.name)
+                .title(this.title)
+                .author(this.author)
                 .build();
     }
 }

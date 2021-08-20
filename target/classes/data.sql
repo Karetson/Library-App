@@ -14,9 +14,9 @@ INSERT INTO users (password, username) VALUES
 ("$2a$12$3DPQYfLWELIs3.gA9n7mA.NgMPPx475fLUdiAS1i/huXct961pKzS", "admin");    -- haslo: admin
 
 -- initializing books
-INSERT INTO books (name) VALUES
-("Haryy Potter"),
-("Wladca Pierscieni"),
-("Piraci Z Karaibow"),
-("Jas i Malgosia"),
-("Pies ktory jezdzi koleja");
+INSERT INTO books (title, author, available) VALUES
+("Harry Potter", "J.K Rowlong", true),
+("Wladca Pierscieni", "Ktos tam", true),
+("Piraci Z Karaibow", "ktos inny", true),
+("Jas i Malgosia", "Krolewna sniezka", true),
+("Pies ktory jezdzi koleja", "Dog", false);

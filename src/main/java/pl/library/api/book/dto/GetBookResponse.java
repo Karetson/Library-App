@@ -6,10 +6,15 @@ import pl.library.adapter.mysql.book.Book;
 @Value
 public class GetBookResponse {
     long id;
-    String name;
+    String title;
+    String author;
+    boolean available;
+
 
     public GetBookResponse(Book book) {
         this.id = book.getId();
-        this.name = book.getName();
+        this.title = book.getTitle();
+        this.author = book.getAuthor();
+        this.available = book.isAvailable();
     }
 }

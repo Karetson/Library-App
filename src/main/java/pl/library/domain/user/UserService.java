@@ -40,7 +40,8 @@ public class UserService {
     @Transactional
     public User registration(User user) throws ValidationException {
         if (!validatePassword(user.getPassword())) {
-            throw new ValidationException("Incorrect password");
+            throw new ValidationException("Password must have at least 8 characters, " +
+                    "uppercase and lowercase letters, numbers and at least one special character, e.g., ! @ # ? ]");
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             Role role = roleRepository.findByName("USER").orElseThrow();
