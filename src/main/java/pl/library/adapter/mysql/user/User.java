@@ -46,4 +46,6 @@ public class User {
     private Set<Borrow> borrowed;
 //    @Builder.Default
 //    private Integer limits = 5;
+    @Builder.Default
+    private boolean blocked = false;
 }
