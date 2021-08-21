@@ -3,6 +3,8 @@ package pl.library.domain.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.library.adapter.mysql.book.Book;
+import pl.library.adapter.mysql.borrow.Borrow;
 import pl.library.adapter.mysql.role.Role;
 import pl.library.adapter.mysql.user.User;
 import pl.library.domain.role.repository.RoleRepository;
@@ -15,6 +17,7 @@ import javax.xml.bind.ValidationException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +46,12 @@ public class UserService {
         } else {
             return list;
         }
+    }
+
+    public Set<Borrow> getAllUsersBorrowedBooksByUserId(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+
+        return user.getBorrowed();
     }
 
     @Transactional
