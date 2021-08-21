@@ -3,7 +3,6 @@ package pl.library.domain.borrow;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.library.adapter.mysql.borrow.Borrow;
-import pl.library.adapter.mysql.user.User;
 import pl.library.domain.borrow.exception.UserIsBlockedException;
 import pl.library.domain.borrow.repository.BorrowRepository;
 import pl.library.domain.user.repository.UserRepository;

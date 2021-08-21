@@ -3,7 +3,6 @@ package pl.library.domain.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.library.adapter.mysql.book.Book;
 import pl.library.adapter.mysql.borrow.Borrow;
 import pl.library.adapter.mysql.role.Role;
 import pl.library.adapter.mysql.user.User;

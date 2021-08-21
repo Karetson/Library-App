@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.library.adapter.mysql.book.Book;
@@ -16,6 +17,8 @@ import pl.library.api.book.dto.CreateBookRequest;
 import pl.library.api.book.dto.CreateBookResponse;
 import pl.library.api.book.dto.GetBookResponse;
 import pl.library.domain.book.BookService;
+import pl.library.domain.book.exception.BookNotFoundException;
+import pl.library.domain.category.exception.CategoryNotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -43,6 +46,28 @@ public class BookController {
         return foundBooks.stream()
                 .map(GetBookResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/getByTitle")
+    public GetBookResponse getBookByTitle(@RequestParam String title) throws BookNotFoundException {
+        Book foundBook = bookService.getBookByTitle(title);
+
+        return new GetBookResponse(foundBook);
+    }
+
+    @GetMapping("/getAllByCategory/{id}")
+    public List<GetBookResponse> getAllBooksByCategory(@PathVariable Long id)
+            throws CategoryNotFoundException, BookNotFoundException {
+        List<Book> foundBooks = bookService.getAllBooksByCategory(id);
+
+        return foundBooks.stream().map(GetBookResponse::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/getAllByPhrase")
+    public List<GetBookResponse> getAllBooksByPhrase(@RequestParam String phrase) throws BookNotFoundException {
+        List<Book> foundBooks = bookService.getAllBooksByPhrase(phrase);
+
+        return foundBooks.stream().map(GetBookResponse::new).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
