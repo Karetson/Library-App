@@ -19,12 +19,6 @@ public class BorrowService {
 
     @Transactional
     public List<Borrow> addBorrow(List<Borrow> borrow) throws UserIsBlockedException {
-        long user_id = borrow.get(0).getUser().getId();
-        User user = userRepository.findById(user_id).orElseThrow();
-
-        if (user.isBlocked()) {
-            throw new UserIsBlockedException("You are blocked! You can not borrow any book.");
-        }
 
         return borrowRepository.saveAll(borrow);
     }
