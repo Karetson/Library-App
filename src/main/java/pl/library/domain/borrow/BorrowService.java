@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.library.adapter.mysql.book.Book;
 import pl.library.adapter.mysql.borrow.Borrow;
+import pl.library.adapter.mysql.role.Role;
 import pl.library.adapter.mysql.user.User;
 import pl.library.domain.book.exception.BookNotFoundException;
 import pl.library.domain.book.repository.BookRepository;
+import pl.library.domain.borrow.exception.UserIsBlockedException;
 import pl.library.domain.borrow.exception.UserLimitException;
 import pl.library.domain.borrow.repository.BorrowRepository;
+import pl.library.domain.role.repository.RoleRepository;
 import pl.library.domain.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -21,14 +24,18 @@ public class BorrowService {
     private final BorrowRepository borrowRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final RoleRepository roleRepository;
 
     @Transactional
-    public List<Borrow> borrowBook(List<Borrow> borrow) throws UserLimitException {
+    public List<Borrow> borrowBook(List<Borrow> borrow) throws UserLimitException, UserIsBlockedException {
         final int limit = 5;
         long user_id = borrow.get(0).getUser().getId();
         User user = userRepository.findById(user_id).orElseThrow();
+        Role roleBlocked = roleRepository.findByName("BLOCKED").orElseThrow();
 
-        if (user.getBorrowed().size() == limit) {
+        if (user.getRoles().contains(roleBlocked)) {
+            throw new UserIsBlockedException("You are blocked. You can not borrow any book.");
+        } else if (user.getBorrowed().size() == limit) {
             throw new UserLimitException("You have reached your borrowing limit of 5 books!");
         }
 

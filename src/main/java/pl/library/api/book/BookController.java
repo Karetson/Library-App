@@ -39,7 +39,7 @@ public class BookController {
                 .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'BLOCKED')")
     @GetMapping("/getAllAvailable")
     public List<GetBookResponse> getAllAvailableBooks() {
         List<Book> foundBooks = bookService.getAllAvailableBooks();
@@ -48,7 +48,7 @@ public class BookController {
                 .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'BLOCKED')")
     @GetMapping("/getAllByCategory/{id}")
     public List<GetBookResponse> getAllBooksByCategory(@PathVariable Long id)
             throws CategoryNotFoundException, BookNotFoundException {
@@ -57,7 +57,7 @@ public class BookController {
         return foundBooks.stream().map(GetBookResponse::new).collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'BLOCKED')")
     @GetMapping("/getAllByPhrase")
     public List<GetBookResponse> getAllBooksByPhrase(@RequestParam String phrase) throws BookNotFoundException {
         List<Book> foundBooks = bookService.getAllBooksByPhrase(phrase);
@@ -65,7 +65,7 @@ public class BookController {
         return foundBooks.stream().map(GetBookResponse::new).collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'BLOCKED')")
     @GetMapping("/getByTitle")
     public GetBookResponse getBookByTitle(@RequestParam String title) throws BookNotFoundException {
         Book foundBook = bookService.getBookByTitle(title);

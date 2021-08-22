@@ -15,6 +15,7 @@ import pl.library.api.borrow.dto.CreateBorrowRequest;
 import pl.library.api.borrow.dto.CreateBorrowResponsone;
 import pl.library.domain.book.exception.BookNotFoundException;
 import pl.library.domain.borrow.BorrowService;
+import pl.library.domain.borrow.exception.UserIsBlockedException;
 import pl.library.domain.borrow.exception.UserLimitException;
 
 import javax.validation.Valid;
@@ -31,14 +32,14 @@ public class BorrowController {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public List<CreateBorrowResponsone> borrowBook(@Valid @RequestBody List<CreateBorrowRequest> borrows)
-            throws UserLimitException {
+            throws UserLimitException, UserIsBlockedException {
         List<Borrow> mappedBorrows = borrows.stream().map(CreateBorrowRequest::toBorrow).collect(Collectors.toList());
         List<Borrow> listOfBorrows = borrowService.borrowBook(mappedBorrows);
 
         return listOfBorrows.stream().map(CreateBorrowResponsone::new).collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER', 'BLOCKED')")
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void returnBook(@PathVariable Long id) throws BookNotFoundException {

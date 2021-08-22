@@ -11,7 +11,9 @@ import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findByTitle(String title);
+
     Optional<List<Book>> findAllByCategories(Category category);
+
     @Query(value = "SELECT b FROM books b WHERE b.title LIKE %:phrase% OR b.author LIKE %:phrase% ORDER BY b.title ASC")
     Optional<List<Book>> findAllByPhraseLike(@Param("phrase") String phrase);
 }
