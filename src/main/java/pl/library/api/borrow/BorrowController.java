@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.library.adapter.mysql.borrow.Borrow;
+import pl.library.domain.book.exception.BookNotFoundException;
 import pl.library.domain.borrow.BorrowService;
-import pl.library.domain.borrow.exception.UserIsBlockedException;
+import pl.library.domain.borrow.exception.UserLimitException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,13 +25,14 @@ public class BorrowController {
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Borrow> addBorrow(@Valid @RequestBody List<Borrow> borrows) throws UserIsBlockedException {
+    public List<Borrow> addBorrow(@Valid @RequestBody List<Borrow> borrows)
+            throws UserLimitException {
         return borrowService.addBorrow(borrows);
     }
 
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBorrow(@PathVariable Long id) {
+    public void deleteBorrow(@PathVariable Long id) throws BookNotFoundException {
         borrowService.deleteBorrow(id);
     }
 }
