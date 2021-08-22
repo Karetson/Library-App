@@ -10,9 +10,9 @@ INSERT INTO user_role VALUES
 (2, 2);
 
 -- initializing users
-INSERT INTO users (password, username) VALUES
-("$2a$12$e9eE40Tw/18mhoRoLIW0ieSRIVLy6BZDm93AsggASZazQnr/.0jPW", "user"),     -- haslo: user
-("$2a$12$3DPQYfLWELIs3.gA9n7mA.NgMPPx475fLUdiAS1i/huXct961pKzS", "admin");    -- haslo: admin
+INSERT INTO users (password, username, limits) VALUES
+("$2a$12$e9eE40Tw/18mhoRoLIW0ieSRIVLy6BZDm93AsggASZazQnr/.0jPW", "user", 5),     -- haslo: user
+("$2a$12$3DPQYfLWELIs3.gA9n7mA.NgMPPx475fLUdiAS1i/huXct961pKzS", "admin", 5);    -- haslo: admin
 
 -- initializing book categories
 INSERT INTO categories (name) VALUES

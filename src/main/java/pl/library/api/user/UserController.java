@@ -14,6 +14,8 @@ import pl.library.adapter.mysql.borrow.Borrow;
 import pl.library.adapter.mysql.user.User;
 import pl.library.api.user.dto.CreateUserRequest;
 import pl.library.api.user.dto.CreateUserResponse;
+import pl.library.api.user.dto.GetBorrowResponse;
+import pl.library.api.user.dto.GetUserResponse;
 import pl.library.domain.user.UserService;
 import pl.library.domain.user.exception.UserExistsException;
 import pl.library.domain.user.exception.UserNotFoundException;
@@ -22,6 +24,7 @@ import javax.validation.Valid;
 import javax.xml.bind.ValidationException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,13 +34,18 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/getAll")
-    public List<User> getAllUsers() throws UserNotFoundException {
-        return userService.getAllUsers();
+    public List<GetUserResponse> getAllUsers() throws UserNotFoundException {
+        List<User> listOfUsers = userService.getAllUsers();
+
+        return listOfUsers.stream().map(GetUserResponse::new).collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/borrows/{id}")
-    public Set<Borrow> getAllUsersBorrowedBooksByUserId(@PathVariable Long id) {
-        return userService.getAllUsersBorrowedBooksByUserId(id);
+    public Set<GetBorrowResponse> getAllUsersBorrowedBooks(@PathVariable Long id) {
+        Set<Borrow> borrows = userService.getAllUsersBorrowedBooks(id);
+
+        return borrows.stream().map(GetBorrowResponse::new).collect(Collectors.toSet());
     }
 
     @PostMapping("/registration")

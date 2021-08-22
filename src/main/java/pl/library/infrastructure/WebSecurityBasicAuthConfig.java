@@ -33,6 +33,11 @@ public class WebSecurityBasicAuthConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/api/user/registration").permitAll()
+//                .antMatchers("/api/book/getAllAvailable", "/api/user/borrows/{id}",
+//                        "/api/borrow/add", "/api/borrow/delete/{id}", "/api/book/getByTitle",
+//                        "/api/book/getAllByPhrase", "/api/book/getAllByCategory/{id}").hasAuthority("USER")
+//                .antMatchers("/api/book/getAll", "/api/book/add", "/api/book/delete/{id}",
+//                        "/api/user/getAll", "/api/user/blockUser", "/api/category/getAll").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll()

@@ -23,7 +23,7 @@ public class BorrowService {
     private final BookRepository bookRepository;
 
     @Transactional
-    public List<Borrow> addBorrow(List<Borrow> borrow) throws UserLimitException {
+    public List<Borrow> borrowBook(List<Borrow> borrow) throws UserLimitException {
         final int limit = 5;
         long user_id = borrow.get(0).getUser().getId();
         User user = userRepository.findById(user_id).orElseThrow();
@@ -46,7 +46,7 @@ public class BorrowService {
     }
 
     @Transactional
-    public void deleteBorrow(Long id) throws BookNotFoundException {
+    public void returnBook(Long id) throws BookNotFoundException {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("There is no such book."));
         book.setAvailable(true);

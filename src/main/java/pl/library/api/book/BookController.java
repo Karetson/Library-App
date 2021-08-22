@@ -48,13 +48,7 @@ public class BookController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/getByTitle")
-    public GetBookResponse getBookByTitle(@RequestParam String title) throws BookNotFoundException {
-        Book foundBook = bookService.getBookByTitle(title);
-
-        return new GetBookResponse(foundBook);
-    }
-
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/getAllByCategory/{id}")
     public List<GetBookResponse> getAllBooksByCategory(@PathVariable Long id)
             throws CategoryNotFoundException, BookNotFoundException {
@@ -63,11 +57,20 @@ public class BookController {
         return foundBooks.stream().map(GetBookResponse::new).collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/getAllByPhrase")
     public List<GetBookResponse> getAllBooksByPhrase(@RequestParam String phrase) throws BookNotFoundException {
         List<Book> foundBooks = bookService.getAllBooksByPhrase(phrase);
 
         return foundBooks.stream().map(GetBookResponse::new).collect(Collectors.toList());
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/getByTitle")
+    public GetBookResponse getBookByTitle(@RequestParam String title) throws BookNotFoundException {
+        Book foundBook = bookService.getBookByTitle(title);
+
+        return new GetBookResponse(foundBook);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
