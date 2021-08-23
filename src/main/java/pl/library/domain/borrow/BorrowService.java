@@ -27,19 +27,19 @@ public class BorrowService {
     private final RoleRepository roleRepository;
 
     @Transactional
-    public List<Borrow> borrowBook(List<Borrow> borrow) throws UserLimitException, UserIsBlockedException {
+    public List<Borrow> borrowBook(List<Borrow> borrows) throws UserLimitException, UserIsBlockedException {
         final int limit = 5;
-        long user_id = borrow.get(0).getUser().getId();
+        long user_id = borrows.get(0).getUser().getId();
         User user = userRepository.findById(user_id).orElseThrow();
         Role roleBlocked = roleRepository.findByName("BLOCKED").orElseThrow();
 
         if (user.getRoles().contains(roleBlocked)) {
-            throw new UserIsBlockedException("You are blocked. You can not borrow any book.");
+            throw new UserIsBlockedException("You are blocked. You can not borrows any book.");
         } else if (user.getBorrowed().size() == limit) {
             throw new UserLimitException("You have reached your borrowing limit of 5 books!");
         }
 
-        borrow.stream()
+        borrows.stream()
                 .peek(element -> {
                     long book_id = element.getBook().getId();
                     Book book = bookRepository.findById(book_id).orElseThrow();
@@ -49,7 +49,7 @@ public class BorrowService {
                 })
                 .collect(Collectors.toList());
 
-        return borrowRepository.saveAll(borrow);
+        return borrowRepository.saveAll(borrows);
     }
 
     @Transactional

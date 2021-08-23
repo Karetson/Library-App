@@ -33,6 +33,7 @@ class BookServiceTest {
     BookRepository bookRepository;
     @Mock
     CategoryRepository categoryRepository;
+
     Set<Category> categories = Set.of(new Category(1L, "Category"));
     Book book = new Book(1L, "title", "author", true, categories);
 
@@ -167,7 +168,7 @@ class BookServiceTest {
     @Test
     void shouldNotDeleteBookWhenBookIsNotFound() {
         // given
-        when(bookRepository.existsById(ID)).thenReturn(false);
+
         // when
 
         // then
