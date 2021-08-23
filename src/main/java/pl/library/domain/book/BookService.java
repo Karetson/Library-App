@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.library.adapter.mysql.book.Book;
 import pl.library.adapter.mysql.category.Category;
+import pl.library.domain.book.exception.BookExistsException;
 import pl.library.domain.book.exception.BookNotFoundException;
 import pl.library.domain.book.repository.BookRepository;
 import pl.library.domain.category.exception.CategoryNotFoundException;
@@ -39,7 +40,8 @@ public class BookService {
                 .orElseThrow(() -> new CategoryNotFoundException("There is no category with id: " + id));
 
         return bookRepository.findAllByCategories(foundCategory)
-                .orElseThrow(() -> new BookNotFoundException("There are no books with category: " + foundCategory.getName()));
+                .orElseThrow(() -> new BookNotFoundException("There are no books with category: " +
+                        foundCategory.getName()));
     }
 
     public List<Book> getAllBooksByPhrase(String phrase) throws BookNotFoundException {
@@ -48,12 +50,21 @@ public class BookService {
     }
 
     @Transactional
-    public Book addBook(Book book) {
-        return bookRepository.save(book);
+    public Book addBook(Book book) throws BookExistsException {
+        if (bookRepository.existsByTitleAndAuthor(book.getTitle(), book.getAuthor())){
+            throw new BookExistsException("Book with '" + book.getTitle() + "' title and '" +
+                    book.getAuthor() + "' author already exists.");
+        } else {
+            return bookRepository.save(book);
+        }
     }
 
     @Transactional
-    public void deleteBook(long id) {
-        bookRepository.deleteById(id);
+    public void deleteBook(long id) throws BookNotFoundException {
+        if (!bookRepository.existsById(id)) {
+            throw new BookNotFoundException("There is no such book.");
+        } else {
+            bookRepository.deleteById(id);
+        }
     }
 }

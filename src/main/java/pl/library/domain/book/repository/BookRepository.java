@@ -16,4 +16,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(value = "SELECT b FROM books b WHERE b.title LIKE %:phrase% OR b.author LIKE %:phrase% ORDER BY b.title ASC")
     Optional<List<Book>> findAllByPhraseLike(@Param("phrase") String phrase);
+
+    boolean existsByTitleAndAuthor(String title, String author);
 }

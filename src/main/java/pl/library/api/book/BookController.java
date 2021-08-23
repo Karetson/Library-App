@@ -17,6 +17,7 @@ import pl.library.api.book.dto.CreateBookRequest;
 import pl.library.api.book.dto.CreateBookResponse;
 import pl.library.api.book.dto.GetBookResponse;
 import pl.library.domain.book.BookService;
+import pl.library.domain.book.exception.BookExistsException;
 import pl.library.domain.book.exception.BookNotFoundException;
 import pl.library.domain.category.exception.CategoryNotFoundException;
 
@@ -76,7 +77,8 @@ public class BookController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateBookResponse addBook(@Valid @RequestBody CreateBookRequest createBookRequest) {
+    public CreateBookResponse addBook(@Valid @RequestBody CreateBookRequest createBookRequest)
+            throws BookExistsException {
         Book newBook = bookService.addBook(createBookRequest.toBook());
 
         return new CreateBookResponse(newBook.getId());
@@ -85,7 +87,7 @@ public class BookController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBook(@PathVariable Long id) {
+    public void deleteBook(@PathVariable Long id) throws BookNotFoundException {
         bookService.deleteBook(id);
     }
 }

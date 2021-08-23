@@ -1,4 +1,4 @@
-package pl.library.library;
+package pl.library;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
