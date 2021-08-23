@@ -1,17 +1,22 @@
 package pl.library.api.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Value;
-import pl.library.adapter.mysql.book.Book;
+import org.springframework.format.annotation.DateTimeFormat;
 import pl.library.adapter.mysql.borrow.Borrow;
-import pl.library.adapter.mysql.user.User;
+import pl.library.api.book.dto.GetBookResponse;
+
+import java.time.LocalDateTime;
 
 @Value
 public class GetBorrowResponse {
-    User user;
-    Book book;
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
+    LocalDateTime createdAt;
+    GetBookResponse book;
 
     public GetBorrowResponse(Borrow borrow) {
-        this.user = borrow.getUser();
-        this.book = borrow.getBook();
+        this.createdAt = borrow.getCreatedAt();
+        this.book = new GetBookResponse(borrow.getBook());
     }
 }

@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.library.adapter.mysql.borrow.Borrow;
 import pl.library.adapter.mysql.user.User;
-import pl.library.api.user.dto.BlockUserRequest;
 import pl.library.api.user.dto.CreateUserRequest;
-import pl.library.api.user.dto.UserIdResponse;
 import pl.library.api.user.dto.GetBorrowResponse;
 import pl.library.api.user.dto.GetUserResponse;
+import pl.library.api.user.dto.UserIdResponse;
 import pl.library.domain.user.UserService;
 import pl.library.domain.user.exception.UserExistsException;
 import pl.library.domain.user.exception.UserNotFoundException;
@@ -59,9 +58,10 @@ public class UserController {
         return new UserIdResponse(newUser.getId());
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/blockUser/{id}")
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public UserIdResponse blockUser(@PathVariable Long id) throws UserNotFoundException {
+    public UserIdResponse blockUser(@PathVariable Long id) throws UserNotFoundException, UserExistsException {
         User blockedUser = userService.blockUser(id);
 
         return new UserIdResponse(blockedUser.getId());

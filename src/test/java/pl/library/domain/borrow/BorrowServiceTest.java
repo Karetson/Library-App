@@ -26,6 +26,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +46,7 @@ class BorrowServiceTest {
 
     Set<Role> roles = new HashSet<>();
     Set<Borrow> borrows = new HashSet<>();
-    User user = new User(ID, "username", "password", roles, borrows, 5);
+    User user = new User(ID, "username", "password", roles, borrows);
     Book book = new Book(ID, "title", "author", true, null);
     Role role = new Role(ID, "BLOCKED");
     Borrow borrow = new Borrow(ID, null, user, book);
@@ -88,6 +89,9 @@ class BorrowServiceTest {
     void shouldNotBorrowBookWhenUserReachBorrowLimit() {
         // given
         List<Borrow> listOfBorrows = new ArrayList<>(List.of(borrow));
+        user.setBorrowed(Set.of(new Borrow(), new Borrow(), new Borrow(), new Borrow(), new Borrow()));
+        when(userRepository.findById(ID)).thenReturn(Optional.of(user));
+        when(roleRepository.findByName(any(String.class))).thenReturn(Optional.of(new Role()));
         // when
 
         // then

@@ -50,7 +50,7 @@ public class UserService {
     public Set<Borrow> getAllUsersBorrowedBooks(Long id) {
         User user = userRepository.findById(id).orElseThrow();
 
-        return user.getBorrowed();
+            return user.getBorrowed();
     }
 
     @Transactional

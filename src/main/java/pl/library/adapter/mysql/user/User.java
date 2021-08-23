@@ -44,6 +44,4 @@ public class User {
     private Set<Role> roles;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Borrow> borrowed;
-    @Builder.Default
-    private Integer limits = 5;
 }

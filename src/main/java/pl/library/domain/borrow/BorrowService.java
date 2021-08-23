@@ -15,6 +15,7 @@ import pl.library.domain.role.repository.RoleRepository;
 import pl.library.domain.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,7 @@ public class BorrowService {
 
         borrows.stream()
                 .peek(element -> {
+                    element.setCreatedAt(LocalDateTime.now());
                     long book_id = element.getBook().getId();
                     Book book = bookRepository.findById(book_id).orElseThrow();
                     book.setAvailable(false);
