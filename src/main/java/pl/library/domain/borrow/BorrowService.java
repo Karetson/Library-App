@@ -29,27 +29,25 @@ public class BorrowService {
 
     @Transactional
     public List<Borrow> borrowBook(List<Borrow> borrows) throws UserLimitException, UserIsBlockedException {
-        final int limit = 5;
         long user_id = borrows.get(0).getUser().getId();
-        User user = userRepository.findById(user_id).orElseThrow();
-        Role roleBlocked = roleRepository.findByName("BLOCKED").orElseThrow();
+        int numberOfBooks = borrows.size();
 
-        if (user.getRoles().contains(roleBlocked)) {
+        if (isUserBlocked(user_id)) {
             throw new UserIsBlockedException("You are blocked. You can not borrows any book.");
-        } else if (user.getBorrowed().size() == limit) {
-            throw new UserLimitException("You have reached your borrowing limit of 5 books!");
+        }
+        if (hasUserReachedLimit(user_id, numberOfBooks)) {
+            throw new UserLimitException("You can not borrow more books.");
         }
 
-        borrows.stream()
-                .peek(element -> {
-                    element.setCreatedAt(LocalDateTime.now());
-                    long book_id = element.getBook().getId();
-                    Book book = bookRepository.findById(book_id).orElseThrow();
-                    book.setAvailable(false);
-                    bookRepository.save(book);
-
-                })
-                .collect(Collectors.toList());
+            borrows.stream()
+                    .peek(element -> {
+                        element.setCreatedAt(LocalDateTime.now());
+                        long book_id = element.getBook().getId();
+                        Book book = bookRepository.findById(book_id).orElseThrow();
+                        book.setAvailable(false);
+                        bookRepository.save(book);
+                    })
+                    .collect(Collectors.toList());
 
         return borrowRepository.saveAll(borrows);
     }
@@ -61,5 +59,20 @@ public class BorrowService {
         book.setAvailable(true);
         bookRepository.save(book);
         borrowRepository.deleteById(id);
+    }
+
+    private boolean isUserBlocked(long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        Role roleBlocked = roleRepository.findByName("BLOCKED").orElseThrow();
+
+        return user.getRoles().contains(roleBlocked);
+    }
+
+    private boolean hasUserReachedLimit(long id, int numberOfBooks) throws UserLimitException {
+        final int limit = 5;
+        User user = userRepository.findById(id).orElseThrow();
+        int usersLimit = limit - user.getBorrowed().size();
+
+        return numberOfBooks > usersLimit;
     }
 }

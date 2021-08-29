@@ -51,20 +51,28 @@ public class BookService {
 
     @Transactional
     public Book addBook(Book book) throws BookExistsException {
-        if (bookRepository.existsByTitleAndAuthor(book.getTitle(), book.getAuthor())){
+        if (existsByTitleAndAuthor(book.getTitle(), book.getAuthor())) {
+            return bookRepository.save(book);
+        } else {
             throw new BookExistsException("Book with '" + book.getTitle() + "' title and '" +
                     book.getAuthor() + "' author already exists.");
-        } else {
-            return bookRepository.save(book);
         }
     }
 
     @Transactional
     public void deleteBook(long id) throws BookNotFoundException {
-        if (!bookRepository.existsById(id)) {
-            throw new BookNotFoundException("There is no such book.");
-        } else {
+        if (existsById(id)) {
             bookRepository.deleteById(id);
+        } else {
+            throw new BookNotFoundException("There is no such book.");
         }
+    }
+
+    private boolean existsByTitleAndAuthor(String title, String author) {
+        return bookRepository.existsByTitleAndAuthor(title, author);
+    }
+
+    private boolean existsById(long id) {
+        return bookRepository.existsById(id);
     }
 }

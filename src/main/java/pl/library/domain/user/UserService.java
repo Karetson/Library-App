@@ -31,26 +31,14 @@ public class UserService {
             Pattern.compile("^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^!&+=]).*$",
                     Pattern.CASE_INSENSITIVE);
 
-    public static boolean validatePassword(String password) {
-        Matcher matcher = VALID_PASSWORD_REGEX.matcher(password);
-
-        return matcher.find();
-    }
-
-    public List<User> getAllUsers() throws UserNotFoundException {
-        List<User> list = userRepository.findAll();
-
-        if (list.isEmpty()) {
-            throw new UserNotFoundException("There is no users in database");
-        } else {
-            return list;
-        }
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     public Set<Borrow> getAllUsersBorrowedBooks(Long id) {
         User user = userRepository.findById(id).orElseThrow();
 
-            return user.getBorrowed();
+        return user.getBorrowed();
     }
 
     @Transactional
@@ -58,7 +46,7 @@ public class UserService {
         if (!validatePassword(user.getPassword())) {
             throw new ValidationException("Password must have at least 8 characters, " +
                     "uppercase and lowercase letters, numbers and at least one special character, e.g., ! @ # ? ]");
-        } else if (userRepository.existsByUsername(user.getUsername())) {
+        } else if (existsByUsername(user)) {
             throw new UserExistsException("User with '" + user.getUsername() + "' username already exists!");
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -77,5 +65,15 @@ public class UserService {
         userToBlock.setRoles(new HashSet<>(Collections.singletonList(blocked)));
 
         return userRepository.save(userToBlock);
+    }
+
+    private boolean validatePassword(String password) {
+        Matcher matcher = VALID_PASSWORD_REGEX.matcher(password);
+
+        return matcher.find();
+    }
+
+    private boolean existsByUsername(User user) {
+        return userRepository.existsByUsername(user.getUsername());
     }
 }
